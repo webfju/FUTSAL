@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Times Cadastrados</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: #fff;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .menu-lateral {
+      width: 250px;
+      background-color: #1a1a1a;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .menu-lateral h2 {
+      color: green;
+      margin-bottom: 20px;
+    }
+    .menu-lateral nav a {
+      display: block;
+      color: white;
+      margin: 10px 0;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+    .menu-lateral nav a:hover {
+      background-color: green;
+      color: black;
+    }
+    .conteudo {
+      flex: 1;
+      padding: 40px;
+    }
+    .conteudo h1 {
+      margin-bottom: 30px;
+    }
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .card {
+      background-color: #1a1a1a;
+      border-left: 4px solid green;
+      border-radius: 10px;
+      padding: 20px;
+      width: 250px;
+      box-shadow: 0 0 8px green;
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #fff;
+    }
+    .card p {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    /* Responsividade para telas pequenas */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .menu-lateral {
+        width: 100%;
+        padding: 15px 10px;
+      }
+      .formulario {
+        padding: 20px 10px;
+      }
+      /* Empilhar os inputs no responsivo */
+      form > div[style*="display: flex"] {
+        flex-direction: column !important;
+      }
+      form > div[style*="display: flex"] input {
+        flex: none !important;
+        width: 100% !important;
+        margin-bottom: 10px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="menu-lateral">
+      <h2>FJU Futsal</h2>
+      <nav>
+        <a href="futsal.html">Cadastro de Atleta</a>
+        <a href="atletass.html">Atletas Cadastrados</a>
+        <a href="cadastrotimes.html">Cadastrar Novo Time</a>
+        <a href="times.html">Times Cadastrados</a>
+      </nav>
+    </aside>
+
+    <main class="conteudo">
+      <h1>Times Cadastrados</h1>
+      <div class="cards" id="lista-times">
+        <!-- Os cards dos times aparecerão aqui -->
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { db } from "./js/firebase.js";
+    import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const lista = document.getElementById("lista-times");
+
+    async function carregarTimes() {
+      try {
+        const snapshot = await getDocs(collection(db, "times"));
+        snapshot.forEach(doc => {
+          const time = doc.data();
+          const card = document.createElement("div");
+          card.className = "card";
+
+          card.innerHTML = `
+            <h3>${time.nome || "Nome do Time"}</h3>
+            <p><strong>Capitão:</strong> ${time.capitao || "-"} (${time.numInscricaoCapitao || "-"})</p>
+            <p><strong>Jogador 1:</strong> ${time.jogador1 || "-"} (${time.numInscricao1 || "-"})</p>
+            <p><strong>Jogador 2:</strong> ${time.jogador2 || "-"} (${time.numInscricao2 || "-"})</p>
+            <p><strong>Jogador 3:</strong> ${time.jogador3 || "-"} (${time.numInscricao3 || "-"})</p>
+            <p><strong>Jogador 4:</strong> ${time.jogador4 || "-"} (${time.numInscricao4 || "-"})</p>
+            <p><strong>Jogador 5:</strong> ${time.jogador5 || "-"} (${time.numInscricao5 || "-"})</p>
+            <p><strong>Descrição:</strong> ${time.descricao || "Sem descrição."}</p>
+          `;
+
+          lista.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar times:", error);
+        lista.innerHTML = "<p>Erro ao carregar times.</p>";
+      }
+    }
+
+    carregarTimes();
+  </script>
+</body>
+</html>

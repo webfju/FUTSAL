@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Atleta</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .menu-lateral {
+      width: 250px;
+      background-color: #1a1a1a;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+    }
+
+    .menu-lateral h2 {
+      color: green;
+      margin-bottom: 20px;
+    }
+
+    .menu-lateral nav a {
+      display: block;
+      color: white;
+      margin: 10px 0;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+
+    .menu-lateral nav a:hover {
+      background-color: green;
+      color: black;
+    }
+
+    .btn-sair {
+      background-color: green;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      color: black;
+      cursor: pointer;
+    }
+
+    .btn-sair:hover {
+      background-color: green;
+    }
+
+    .formulario {
+      flex: 1;
+      padding: 40px;
+      background-color: #121212;
+      margin-left: 250px;
+      box-sizing: border-box;
+    }
+
+    .formulario h1 {
+      color: green;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"] {
+      background-color: black;
+      border: 1px solid green;
+      color: white;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      height: 40px;
+      box-sizing: border-box;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="email"]::placeholder {
+      color: #bbb;
+    }
+
+    .radio-group,
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .radio-group label,
+    .checkbox-group label {
+      color: white;
+      font-size: 14px;
+    }
+
+    button[type="submit"] {
+      background-color: green;
+      color: black;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: green;
+    }
+
+    .endereco-numero {
+      display: flex !important;
+      align-items: stretch;
+      gap: 10px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .endereco-numero input {
+      height: 40px !important;
+      box-sizing: border-box !important;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .menu-lateral {
+        width: 100%;
+        padding: 15px 10px;
+        position: relative;
+      }
+
+      .formulario {
+        padding: 20px 10px;
+        margin-left: 0 !important;
+      }
+
+      form > div[style*="display: flex"] {
+        flex-direction: column !important;
+      }
+
+      form > div[style*="display: flex"] input {
+        flex: none !important;
+        width: 100% !important;
+        margin-bottom: 10px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="menu-lateral">
+      <h2>FJU Futsal</h2>
+      <nav>
+        <a href="futsal.html">Cadastro de Atleta</a>
+        <a href="atletass.html">Atletas Cadastrados</a>
+        <a href="cadastrotimes.html">Cadastrar Novo Time</a>
+        <a href="times.html">Times Cadastrados</a>
+      </nav>
+    </aside>
+
+    <main class="formulario">
+      <h1>Cadastro de Novo Atleta</h1>
+      <form id="form-atleta">
+        <input type="text" name="nome" placeholder="Nome completo" required />
+
+        <div class="endereco-numero" style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <input type="text" name="endereco" placeholder="Endereço" style="flex: 3;" required />
+          <input type="text" name="numero" placeholder="Número" style="flex: 1;" required />
+        </div>
+
+        <input type="text" name="bairro" placeholder="Bairro" />
+        <input type="text" name="cep" placeholder="CEP" />
+        <input type="text" name="whatsapp" placeholder="WhatsApp" />
+        <input type="text" name="contatoUrgencia" placeholder="Em caso de urgência telefone para contato"/>
+        <input type="text" name="nomePai" placeholder="Nome do responsável" />
+        <input type="text" name="grauAfinidade" placeholder="Grau de afinidade" />
+
+        <p>Possui alguma Doença ou Restrição Médica?</p>
+        <label><input type="radio" name="temDoenca" value="Sim" /> Sim</label>
+        <label><input type="radio" name="temDoenca" value="Não" /> Não</label>
+        <p>Se Sim, qual?</p>
+        <input type="text" name="doencaRestricao" placeholder="Descreva a doença ou restrição" />
+
+        <p>Toma Remédio Controlado?</p>
+        <label><input type="radio" name="remedioControlado" value="Sim" /> Sim</label>
+        <label><input type="radio" name="remedioControlado" value="Não" /> Não</label>
+        <p>Se Sim, qual?</p>
+        <input type="text" name="remedioControladoDescricao" placeholder="Nome do remédio" />
+
+        <p>Ao fazer exercício, sente:</p>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="doresPeito" /> Dores no peito</label>
+          <label><input type="checkbox" name="faltaAr" /> Falta de ar</label>
+          <label><input type="checkbox" name="vertigens" /> Vertigens</label>
+        </div>
+
+        <button type="submit">Enviar Cadastro</button>
+      </form>
+    </main>
+  </div>
+
+  <script type="module">
+    import { db } from './js/firebase.js';
+    import { collection, addDoc, getDocs, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js';
+
+    const form = document.getElementById('form-atleta');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      async function gerarNumeroInscricaoUnico() {
+        let numero;
+        let existe = true;
+        while (existe) {
+          numero = Math.floor(10000 + Math.random() * 90000);
+          const querySnapshot = await getDocs(collection(db, 'atletas'));
+          existe = querySnapshot.docs.some(doc => doc.data().numeroInscricao == numero);
+        }
+        return numero.toString();
+      }
+
+      const numeroInscricao = await gerarNumeroInscricaoUnico();
+
+      const dadosAtleta = {
+        numeroInscricao,
+        nome: formData.get('nome'),
+        endereco: formData.get('endereco'),
+        bairro: formData.get('bairro'),
+        cep: formData.get('cep'),
+        whatsapp: formData.get('whatsapp'),
+        nomePai: formData.get('nomePai'),
+        contatoUrgencia: formData.get('contatoUrgencia'),
+        grauAfinidade: formData.get('grauAfinidade'),
+        doencaRestricao: formData.get('doencaRestricao'),
+        remedioControlado: formData.get('remedioControlado'),
+        remedioControladoDescricao: formData.get('remedioControladoDescricao'),
+        doresPeito: formData.get('doresPeito') === "on",
+        faltaAr: formData.get('faltaAr') === "on",
+        vertigens: formData.get('vertigens') === "on",
+        dataCadastro: serverTimestamp()
+      };
+
+      try {
+        await addDoc(collection(db, 'atletas'), dadosAtleta);
+        alert(`Cadastro enviado! Número de inscrição: ${numeroInscricao}`);
+        form.reset();
+      } catch (error) {
+        console.error('Erro ao cadastrar atleta:', error);
+        alert('Erro ao enviar cadastro.');
+      }
+    });
+  </script>
+</body>
+</html>

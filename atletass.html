@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Atletas Cadastrados</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .menu-lateral {
+      width: 250px;
+      background-color: #1a1a1a;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 20px;
+    }
+
+    .menu-lateral h2 {
+      color: green;
+      margin-bottom: 20px;
+    }
+
+    .menu-lateral nav a {
+      display: block;
+      color: white;
+      margin: 10px 0;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+
+    .menu-lateral nav a:hover {
+      background-color: green;
+      color: black;
+    }
+
+    .conteudo {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .conteudo h1 {
+      color: green;
+      margin-bottom: 30px;
+    }
+
+    .search-container {
+      margin-bottom: 30px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-container input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid green;
+      background-color: black;
+      color: white;
+    }
+
+    .search-container button {
+      padding: 10px 20px;
+      border-radius: 5px;
+      border: none;
+      background-color: green;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .search-container button:hover {
+      background-color: #007700;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      border-left: 4px solid green;
+      border-radius: 10px;
+      padding: 20px;
+      width: 280px;
+      box-shadow: 0 0 8px green;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: white;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #ccc;
+      margin: 6px 0;
+    }
+
+    /* Responsividade para telas pequenas */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .menu-lateral {
+        width: 100%;
+        padding: 15px 10px;
+      }
+      .formulario {
+        padding: 20px 10px;
+      }
+      /* Empilhar os inputs no responsivo */
+      form > div[style*="display: flex"] {
+        flex-direction: column !important;
+      }
+      form > div[style*="display: flex"] input {
+        flex: none !important;
+        width: 100% !important;
+        margin-bottom: 10px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="menu-lateral">
+      <h2>FJU Futsal</h2>
+      <nav>
+        <a href="futsal.html">Cadastro de Atleta</a>
+        <a href="atletass.html">Atletas Cadastrados</a>
+        <a href="cadastrotimes.html">Cadastrar Novo Time</a>
+        <a href="times.html">Times Cadastrados</a>
+      </nav>
+    </aside>
+
+    <main class="conteudo">
+      <h1>Atletas Cadastrados</h1>
+
+      <!-- Área de busca -->
+      <div class="search-container">
+        <input type="text" id="input-numero" placeholder="Digite o número de inscrição" />
+        <button id="btn-pesquisar">Pesquisar</button>
+      </div>
+
+      <!-- Resultados da busca -->
+      <div id="lista-atletas" class="cards"></div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { db } from "./js/firebase.js";
+    import {
+      collection,
+      getDocs,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const lista = document.getElementById('lista-atletas');
+    const inputNumero = document.getElementById('input-numero');
+    const btnPesquisar = document.getElementById('btn-pesquisar');
+
+    function criarCard(atleta) {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      card.innerHTML = `
+        <h2>${atleta.nome}</h2>
+        <h3>Nº Inscrição: ${atleta.numeroInscricao || '-'}</h3>
+        <p><strong>Endereço:</strong> ${atleta.endereco || '-'}, Nº ${atleta.numero || '-'}</p>
+        <p><strong>Bairro:</strong> ${atleta.bairro || '-'}</p>
+        <p><strong>CEP:</strong> ${atleta.cep || '-'}</p>
+        <p><strong>WhatsApp:</strong> ${atleta.whatsapp || '-'}</p>
+        <p><strong>Responsável:</strong> ${atleta.nomePai || '-'}</p>
+        <p><strong>Contato de Urgência:</strong> ${atleta.contatoUrgencia || '-'}</p>
+        <p><strong>Grau de Afinidade:</strong> ${atleta.grauAfinidade || '-'}</p>
+        <p><strong>Doença ou Restrição:</strong> ${atleta.doencaRestricao || 'Nenhuma'}</p>
+        <p><strong>Remédio Controlado:</strong> ${atleta.remedioControlado || 'Não'}</p>
+        <p><strong>Data de Cadastro:</strong> ${atleta.dataCadastro?.toDate?.().toLocaleDateString?.('pt-BR') || '-'}</p>
+      `;
+
+      return card;
+    }
+
+    async function carregarAtletas() {
+      lista.innerHTML = '';
+      try {
+        const snapshot = await getDocs(collection(db, 'atletas'));
+        snapshot.forEach(doc => {
+          const atleta = doc.data();
+          const card = criarCard(atleta);
+          lista.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar atletas:', error);
+        lista.innerHTML = `<p>Erro ao carregar atletas.</p>`;
+      }
+    }
+
+    async function pesquisarAtleta() {
+      const numeroBusca = inputNumero.value.trim();
+      lista.innerHTML = '';
+
+      if (!numeroBusca) {
+        alert('Digite um número de inscrição para pesquisar.');
+        return;
+      }
+
+      try {
+        const q = query(collection(db, 'atletas'), where('numeroInscricao', '==', numeroBusca));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          lista.innerHTML = `<p>Nenhum atleta encontrado com o número ${numeroBusca}.</p>`;
+          return;
+        }
+
+        snapshot.forEach(doc => {
+          const atleta = doc.data();
+          const card = criarCard(atleta);
+          lista.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error('Erro ao pesquisar atleta:', error);
+        lista.innerHTML = `<p>Erro ao pesquisar atleta.</p>`;
+      }
+    }
+
+    carregarAtletas();
+    btnPesquisar.addEventListener('click', pesquisarAtleta);
+    inputNumero.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        pesquisarAtleta();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro de Time</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .menu-lateral {
+      width: 250px;
+      background-color: #1a1a1a;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .menu-lateral h2 {
+      color: green;
+      margin-bottom: 20px;
+    }
+
+    .menu-lateral nav a {
+      display: block;
+      color: white;
+      margin: 10px 0;
+      text-decoration: none;
+      padding: 8px;
+      border-radius: 5px;
+      transition: background 0.2s;
+    }
+
+    .menu-lateral nav a:hover {
+      background-color: green;
+      color: black;
+    }
+
+    .formulario {
+      flex: 1;
+      padding: 40px;
+      background-color: #121212;
+    }
+
+    .formulario h1 {
+      color: green;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input[type="text"],
+    textarea {
+      background-color: black;
+      border: 1px solid green;
+      color: white;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      height: 40px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: auto;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #bbb;
+    }
+
+    button[type="submit"] {
+      background-color: green;
+      color: black;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: green;
+    }
+
+    /* Ajustar as divs que contém os inputs para ficarem com a mesma altura dos inputs */
+    form > div[style*="display: flex"] {
+      display: flex !important;
+      align-items: stretch;
+      gap: 10px !important;
+      margin-bottom: 10px !important;
+    }
+
+    form > div[style*="display: flex"] input {
+      height: 40px !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Responsividade para telas pequenas */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .menu-lateral {
+        width: 100%;
+        padding: 15px 10px;
+      }
+      .formulario {
+        padding: 20px 10px;
+      }
+      /* Empilhar os inputs no responsivo */
+      form > div[style*="display: flex"] {
+        flex-direction: column !important;
+      }
+      form > div[style*="display: flex"] input {
+        flex: none !important;
+        width: 100% !important;
+        margin-bottom: 10px !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="menu-lateral">
+      <h2>FJU Futsal</h2>
+      <nav>
+        <a href="futsal.html">Cadastro de Atleta</a>
+        <a href="atletass.html">Atletas Cadastrados</a>
+        <a href="cadastrotimes.html">Cadastrar Novo Time</a>
+        <a href="times.html">Times Cadastrados</a>
+      </nav>
+    </aside>
+
+    <main class="formulario">
+      <h1>Cadastro de Time</h1>
+      <form id="form-time">
+        <input type="text" name="nome" placeholder="Nome do Time" required />
+        <div style="display: flex; gap: 10px;">
+          <input type="text" name="capitao" placeholder="capitão do time" style="flex:2" />
+          <input type="text" name="numcapitao" placeholder="Nº Inscrição " style="flex:1" />
+        </div>
+
+        <h3>Membros do Time</h3>
+
+        <div style="display: flex; gap: 10px;">
+          <input type="text" name="jogador1" placeholder="Jogador 1" style="flex:2" />
+          <input type="text" name="numInscricao1" placeholder="Nº Inscrição " style="flex:1" />
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <input type="text" name="jogador2" placeholder="Jogador 2" style="flex:2" />
+          <input type="text" name="numInscricao2" placeholder="Nº Inscrição " style="flex:1" />
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <input type="text" name="jogador3" placeholder="Jogador 3" style="flex:2" />
+          <input type="text" name="numInscricao3" placeholder="Nº Inscrição " style="flex:1" />
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <input type="text" name="jogador4" placeholder="Jogador 4" style="flex:2" />
+          <input type="text" name="numInscricao4" placeholder="Nº Inscrição " style="flex:1" />
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <input type="text" name="jogador5" placeholder="Jogador 5" style="flex:2" />
+          <input type="text" name="numInscricao5" placeholder="Nº Inscrição " style="flex:1" />
+        </div>
+
+        <textarea name="descricao" placeholder="Descrição do time, histórico ou observações" rows="4"></textarea>
+        <button type="submit">Cadastrar Time</button>
+      </form>
+    </main>
+  </div>
+
+  <script type="module">
+  import { db } from './js/firebase.js';
+  import { collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js';
+
+  const form = document.getElementById('form-time');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+
+    const novoTime = {
+      nome: formData.get('nome'),
+      capitao: formData.get('capitao'),
+      numInscricaoCapitao: formData.get('numcapitao'),
+      descricao: formData.get('descricao'),
+      dataCadastro: serverTimestamp(),
+
+      jogador1: formData.get('jogador1'),
+      numInscricao1: formData.get('numInscricao1'),
+      jogador2: formData.get('jogador2'),
+      numInscricao2: formData.get('numInscricao2'),
+      jogador3: formData.get('jogador3'),
+      numInscricao3: formData.get('numInscricao3'),
+      jogador4: formData.get('jogador4'),
+      numInscricao4: formData.get('numInscricao4'),
+      jogador5: formData.get('jogador5'),
+      numInscricao5: formData.get('numInscricao5')
+    };
+
+    try {
+      await addDoc(collection(db, 'times'), novoTime);
+      alert('Time cadastrado com sucesso!');
+      form.reset();
+    } catch (error) {
+      console.error('Erro ao cadastrar time:', error);
+      alert('Erro ao cadastrar o time.');
+    }
+  });
+  </script>
+</body>
+</html>
